@@ -1,3 +1,18 @@
+plugins {
+    id 'maven-publish'
+}
+
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'Sign-API'
+            version = project.version
+            from components.java
+        }
+    }
 }
