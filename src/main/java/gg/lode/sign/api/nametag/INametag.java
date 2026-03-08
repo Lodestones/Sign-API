@@ -2,6 +2,8 @@ package gg.lode.sign.api.nametag;
 
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public interface INametag {
     Player getPlayer();
     void showForAll();
@@ -10,4 +12,51 @@ public interface INametag {
     void show(Player viewer);
     void hide(Player viewer);
     void update(Player viewer);
+
+    /**
+     * Override the nametag lines globally for all viewers.
+     * This overrides the configured nametag until {@link #release()} is called
+     * or the plugin is reloaded.
+     *
+     * @param lines the custom lines to display
+     */
+    void setLines(List<String> lines);
+
+    /**
+     * Override the nametag lines that a specific viewer sees for this player.
+     * This overrides the configured nametag until {@link #release(Player)} is called
+     * or the plugin is reloaded.
+     *
+     * @param viewer the player who will see the custom lines
+     * @param lines  the custom lines to display
+     */
+    void setLines(Player viewer, List<String> lines);
+
+    /**
+     * Release the global override, restoring the configured nametag for all viewers.
+     */
+    void release();
+
+    /**
+     * Release the per-viewer override, restoring the configured nametag
+     * for the given viewer.
+     *
+     * @param viewer the player whose override should be removed
+     */
+    void release(Player viewer);
+
+    /**
+     * Check if a global override is active.
+     *
+     * @return true if a global override is active
+     */
+    boolean hasOverride();
+
+    /**
+     * Check if a viewer has a per-viewer override active.
+     *
+     * @param viewer the player to check
+     * @return true if the viewer has an active override
+     */
+    boolean hasOverride(Player viewer);
 }
