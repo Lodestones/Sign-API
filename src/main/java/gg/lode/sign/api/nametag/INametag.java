@@ -9,6 +9,7 @@ public interface INametag {
     void showForAll();
     void hideForAll();
     void updateVisibilityForAll();
+    void updateVisibilityFor(Player viewer);
     void show(Player viewer);
     void hide(Player viewer);
     void update(Player viewer);
