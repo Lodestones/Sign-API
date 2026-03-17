@@ -1,0 +1,42 @@
+name: Publish to JitPack
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  trigger-jitpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger JitPack build
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "Triggering JitPack build for tag: $TAG"
+
+          # Request the POM to trigger a JitPack build
+          curl -s -o /dev/null -w "%{http_code}" \
+            "https://jitpack.io/com/github/Lodestones/Sign-API/$TAG/Sign-API-$TAG.pom" || true
+
+          # Wait for JitPack to start processing
+          sleep 10
+
+          # Check build status
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s "https://jitpack.io/api/builds/com.github.Lodestones/Sign-API/$TAG" | grep -o '"status":"[^"]*"' | head -1 | cut -d'"' -f4)
+            echo "Attempt $i/30 - Build status: $STATUS"
+
+            if [ "$STATUS" = "ok" ]; then
+              echo "JitPack build successful!"
+              exit 0
+            elif [ "$STATUS" = "Error" ]; then
+              echo "JitPack build failed!"
+              curl -s "https://jitpack.io/com/github/Lodestones/Sign-API/$TAG/build.log"
+              exit 1
+            fi
+
+            sleep 10
+          done
+
+          echo "Build timed out waiting for JitPack"
+          exit 1
