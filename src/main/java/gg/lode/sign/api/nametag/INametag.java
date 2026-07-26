@@ -2,6 +2,7 @@ package gg.lode.sign.api.nametag;
 
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface INametag {
@@ -13,6 +14,44 @@ public interface INametag {
     void show(Player viewer);
     void hide(Player viewer);
     void update(Player viewer);
+
+    /**
+     * Persistently hides (or un-hides) this nametag for everyone. Unlike
+     * {@link #hideForAll()}, which the visibility scheduler undoes on its
+     * next pass, a hidden nametag stays hidden until this is called with
+     * {@code false}.
+     *
+     * @param hidden whether the nametag should be hidden
+     */
+    void setHidden(boolean hidden);
+
+    /**
+     * Check if this nametag is persistently hidden.
+     *
+     * @return true if hidden via {@link #setHidden(boolean)}
+     */
+    boolean isHidden();
+
+    /**
+     * Restrict this nametag to a whitelist of viewers: only the given
+     * players can see it until {@link #clearViewers()} is called. Distance,
+     * world and vanish rules still apply on top of the whitelist.
+     *
+     * @param viewers the only players allowed to see this nametag
+     */
+    void setViewers(Collection<Player> viewers);
+
+    /**
+     * Remove the viewer whitelist, restoring visibility for everyone.
+     */
+    void clearViewers();
+
+    /**
+     * Check if a viewer whitelist is active.
+     *
+     * @return true if visibility is restricted via {@link #setViewers(Collection)}
+     */
+    boolean hasViewerWhitelist();
 
     /**
      * Override the nametag lines globally for all viewers.
