@@ -36,6 +36,17 @@ public interface IVirtualNametag {
     /** Convenience for a single line. */
     void setLine(Component line);
 
+    /**
+     * Replaces what the tag says for one viewer only.
+     *
+     * <p>For anything that is true of the watcher rather than the subject — a health readout staff can
+     * see and players cannot, most obviously. Each viewer is sent their own text, so two people looking
+     * at the same subject can be shown different things, and the line counts need not match.
+     *
+     * <p>Passing null clears the override and puts that viewer back on the shared lines.
+     */
+    void setLines(Player viewer, List<Component> lines);
+
     /** Draws the tag for one viewer, and keeps drawing it until hidden. */
     void show(Player viewer);
 
